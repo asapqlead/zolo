@@ -41,6 +41,7 @@ export default function Dashboard() {
   const store = useZoloStore();
   const { profile, totalXP, dayStreak, getTodayTasks, getTodayHabits,
     getTodayVibeScore, getDecayingTasks, completeTask, completeHabit,
+    uncompleteTask, uncompleteHabit,
     updateTaskDecay, addXP, checkDayStreak } = store;
   const { milestone, dismiss: dismissMilestone } = useStreakMilestone(dayStreak);
 
@@ -73,17 +74,27 @@ export default function Dashboard() {
     return () => clearInterval(t);
   }, [focusActive, focusTarget]);
 
-  // All-clear detection
+  // All-clear detection — only fire once per calendar day, never on re-mount
   const todayTasks = getTodayTasks();
   const allDone = todayTasks.length > 0 && todayTasks.every((t) => t.completed);
+  const ALL_CLEAR_KEY = "zolo-allclear-date";
   useEffect(() => {
-    if (allDone && !prevAllDoneRef.current) {
+    if (!allDone) {
+      prevAllDoneRef.current = false;
+      return;
+    }
+    const todayStr = format(new Date(), "yyyy-MM-dd");
+    const lastAwarded = localStorage.getItem(ALL_CLEAR_KEY);
+    // Already awarded today — never fire again even after re-mount
+    if (lastAwarded === todayStr) return;
+    // First genuine all-done this day
+    if (!prevAllDoneRef.current) {
       prevAllDoneRef.current = true;
+      localStorage.setItem(ALL_CLEAR_KEY, todayStr);
       addXP(XP_EARN.allTasksBonus);
       setShowAllClear(true);
       fire({ type: "burst" });
     }
-    if (!allDone) prevAllDoneRef.current = false;
   }, [allDone]);
 
   const showXPToast = useCallback((amount: number) => {
@@ -296,8 +307,9 @@ export default function Dashboard() {
                     opacity: task.completed ? 0.5 : 1, transition: "all 0.2s",
                     boxShadow: task.completed ? "none" : `0 0 12px ${decayGlow}`,
                   }}>
-                    <button onClick={() => !task.completed && handleCompleteTask(task.id)}
-                      style={{ width: 24, height: 24, borderRadius: "50%", border: `2px solid ${task.completed ? "var(--lime)" : pColor}`, background: task.completed ? "var(--lime)" : "transparent", cursor: task.completed ? "default" : "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, transition: "all 0.2s" }}>
+                    <button onClick={() => task.completed ? uncompleteTask(task.id) : handleCompleteTask(task.id)}
+                      title={task.completed ? "tap to uncheck" : "tap to complete"}
+                      style={{ width: 24, height: 24, borderRadius: "50%", border: `2px solid ${task.completed ? "var(--lime)" : pColor}`, background: task.completed ? "var(--lime)" : "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, transition: "all 0.2s" }}>
                       {task.completed && <span style={{ color: "var(--bg)", fontSize: 11, fontWeight: 800 }}>✓</span>}
                     </button>
                     <div style={{ flex: 1, minWidth: 0 }}>
@@ -347,8 +359,9 @@ export default function Dashboard() {
                       <div style={{ fontSize: 13, fontWeight: 500, textDecoration: done ? "line-through" : "none", color: done ? "var(--text-muted)" : "var(--text)" }}>{habit.name}</div>
                       {habit.streak > 0 && <span style={{ fontSize: 10, color: "var(--amber)", fontWeight: 600 }}>🔥 {habit.streak}d</span>}
                     </div>
-                    <button onClick={() => !done && handleCompleteHabit(habit.id)} disabled={done}
-                      style={{ width: 30, height: 30, borderRadius: "50%", border: `2px solid ${done ? "var(--lime)" : "var(--border)"}`, background: done ? "var(--lime)" : "transparent", cursor: done ? "default" : "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, transition: "all 0.2s" }}>
+                    <button onClick={() => done ? uncompleteHabit(habit.id) : handleCompleteHabit(habit.id)}
+                      title={done ? "tap to uncheck" : "tap to complete"}
+                      style={{ width: 30, height: 30, borderRadius: "50%", border: `2px solid ${done ? "var(--lime)" : "var(--border)"}`, background: done ? "var(--lime)" : "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, transition: "all 0.2s" }}>
                       {done && <span style={{ color: "var(--bg)", fontSize: 13, fontWeight: 800 }}>✓</span>}
                     </button>
                   </div>

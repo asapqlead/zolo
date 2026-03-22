@@ -192,6 +192,8 @@ interface ZoloState {
 
   addHabit: (habit: Omit<Habit, "id" | "streak" | "longestStreak" | "completedDates" | "createdAt">) => void;
   completeHabit: (id: string) => { xpGained: number };
+  uncompleteTask: (id: string) => void;
+  uncompleteHabit: (id: string) => void;
   deleteHabit: (id: string) => void;
 
   addFocusSession: (session: Omit<FocusSession, "id">) => { xpGained: number };
@@ -265,8 +267,26 @@ export const useZoloStore = create<ZoloState>()(
         return { xpGained };
       },
 
-      deleteTask: (id) =>
-        set((s) => ({ tasks: s.tasks.filter((t) => t.id !== id) })),
+      deleteTask: (id) => {
+        set((s) => ({ tasks: s.tasks.filter((t) => t.id !== id) }));
+        // Push immediately so cloud doesn't restore the deleted item
+        import("./sync").then(({ schedulePush }) => schedulePush(0));
+      },
+
+      uncompleteTask: (id) => {
+        const task = get().tasks.find((t) => t.id === id);
+        if (!task || !task.completed) return;
+        const xpMap = { low: XP_EARN.taskLow, medium: XP_EARN.taskMedium, high: XP_EARN.taskHigh };
+        const xpToReturn = task.xpEarned ?? xpMap[task.priority];
+        set((s) => ({
+          tasks: s.tasks.map((t) =>
+            t.id === id
+              ? { ...t, completed: false, completedAt: undefined, xpEarned: undefined }
+              : t
+          ),
+          totalXP: Math.max(0, s.totalXP - xpToReturn),
+        }));
+      },
 
       archiveTask: (id) =>
         set((s) => ({
@@ -325,8 +345,30 @@ export const useZoloStore = create<ZoloState>()(
         return { xpGained: XP_EARN.habit };
       },
 
-      deleteHabit: (id) =>
-        set((s) => ({ habits: s.habits.filter((h) => h.id !== id) })),
+      deleteHabit: (id) => {
+        set((s) => ({ habits: s.habits.filter((h) => h.id !== id) }));
+        import("./sync").then(({ schedulePush }) => schedulePush(0));
+      },
+
+      uncompleteHabit: (id) => {
+        const today = todayStr();
+        const habit = get().habits.find((h) => h.id === id);
+        if (!habit || !habit.completedDates.includes(today)) return;
+        const yesterday = format(new Date(Date.now() - 86400000), "yyyy-MM-dd");
+        const newStreak = habit.completedDates.includes(yesterday) ? habit.streak - 1 : 0;
+        set((s) => ({
+          habits: s.habits.map((h) =>
+            h.id === id
+              ? {
+                  ...h,
+                  completedDates: h.completedDates.filter((d) => d !== today),
+                  streak: Math.max(0, newStreak),
+                }
+              : h
+          ),
+          totalXP: Math.max(0, s.totalXP - XP_EARN.habit),
+        }));
+      },
 
       addFocusSession: (session) => {
         const xpGained = session.completed && session.duration >= 25 ? XP_EARN.focusSession : 0;

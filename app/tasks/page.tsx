@@ -18,7 +18,7 @@ const DECAY_BADGE: Record<string, { label: string; color: string }> = {
 };
 
 export default function TasksPage() {
-  const { tasks, addTask, completeTask, deleteTask, archiveTask, rescheduleTask, updateTaskDecay } = useZoloStore();
+  const { tasks, addTask, completeTask, uncompleteTask, deleteTask, archiveTask, rescheduleTask, updateTaskDecay } = useZoloStore();
   const { fire } = useConfetti();
   const [tab, setTab] = useState<Tab>("today");
   const [showAdd, setShowAdd] = useState(false);
@@ -263,8 +263,9 @@ export default function TasksPage() {
                 {/* Main row */}
                 <div style={{ padding: "12px 14px", display: "flex", alignItems: "center", gap: 11 }}>
                   {/* Complete button */}
-                  <button onClick={() => !task.completed && handleComplete(task.id)}
-                    style={{ width: 26, height: 26, borderRadius: "50%", border: `2px solid ${task.completed ? "var(--lime)" : pColor}`, background: task.completed ? "var(--lime)" : "transparent", cursor: task.completed ? "default" : "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, transition: "all 0.2s" }}>
+                  <button onClick={() => task.completed ? uncompleteTask(task.id) : handleComplete(task.id)}
+                    title={task.completed ? "tap to uncheck" : "tap to complete"}
+                    style={{ width: 26, height: 26, borderRadius: "50%", border: `2px solid ${task.completed ? "var(--lime)" : pColor}`, background: task.completed ? "var(--lime)" : "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, transition: "all 0.2s" }}>
                     {task.completed && <span style={{ color: "var(--bg)", fontSize: 12, fontWeight: 900 }}>✓</span>}
                   </button>
 

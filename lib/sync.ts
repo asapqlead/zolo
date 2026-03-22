@@ -129,6 +129,11 @@ export async function pullFromSupabase(): Promise<{ ok: boolean; error?: string;
 
   const userId = getUserId();
 
+  // Only overwrite local state if the local store has no profile yet.
+  // This prevents a Supabase pull from restoring items the user deleted locally.
+  const localState = useZoloStore.getState();
+  const localHasData = !!localState.profile;
+
   try {
     // Fetch user row
     const { data: user } = await supabase!
@@ -188,7 +193,14 @@ export async function pullFromSupabase(): Promise<{ ok: boolean; error?: string;
       generatedAt: r.generated_at,
     }));
 
-    // Overwrite local Zustand store
+    // Only overwrite local store if this device has no existing data.
+    // If the user already has a profile locally, their local state wins —
+    // this prevents deleted items from being restored on page reload.
+    if (localHasData) {
+      return { ok: true, isNewUser: false };
+    }
+
+    // New device — apply cloud data
     useZoloStore.setState({
       profile: user.profile ?? null,
       totalXP: user.total_xp ?? 0,

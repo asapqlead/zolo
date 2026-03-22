@@ -32,7 +32,7 @@ function HeatmapRow({ completedDates }: { completedDates: string[] }) {
 }
 
 export default function HabitsPage() {
-  const { habits, addHabit, completeHabit, deleteHabit } = useZoloStore();
+  const { habits, addHabit, completeHabit, uncompleteHabit, deleteHabit } = useZoloStore();
   const { fire } = useConfetti();
   const [showAdd, setShowAdd] = useState(false);
   const [name, setName] = useState("");
@@ -184,8 +184,9 @@ export default function HabitsPage() {
                           style={{ background: "transparent", border: "none", color: "var(--text-dim)", cursor: "pointer", padding: 2 }}>
                           {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
                         </button>
-                        <button onClick={() => !done && handleComplete(habit.id)} disabled={done}
-                          style={{ width: 34, height: 34, borderRadius: "50%", border: `2px solid ${done ? "var(--lime)" : "var(--border)"}`, background: done ? "var(--lime)" : "transparent", cursor: done ? "default" : "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, transition: "all 0.2s" }}>
+                        <button onClick={() => done ? uncompleteHabit(habit.id) : handleComplete(habit.id)}
+                          title={done ? "tap to uncheck" : "tap to complete"}
+                          style={{ width: 34, height: 34, borderRadius: "50%", border: `2px solid ${done ? "var(--lime)" : "var(--border)"}`, background: done ? "var(--lime)" : "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, transition: "all 0.2s" }}>
                           {done ? <span style={{ color: "var(--bg)", fontSize: 15, fontWeight: 900 }}>✓</span> : null}
                         </button>
                       </div>
