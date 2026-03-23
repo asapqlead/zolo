@@ -68,7 +68,7 @@ export default function SettingsPage() {
   );
 
   return (
-    <div style={{ minHeight: "100dvh", background: "var(--bg)", padding: "20px 16px 20px" }}>
+    <div style={{ minHeight: "100dvh", background: "var(--bg)", padding: "52px 20px 24px" }}>
       <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 28, marginBottom: 20 }}>settings</h1>
 
       {/* Player card */}
@@ -169,7 +169,7 @@ export default function SettingsPage() {
 
       {/* Save */}
       <button onClick={handleSave}
-        style={{ width: "100%", background: saved ? "transparent" : "var(--lime)", color: saved ? "var(--lime)" : "var(--bg)", border: saved ? "1px solid var(--lime)" : "none", borderRadius: 14, padding: "14px", fontFamily: "var(--font-body)", fontWeight: 800, fontSize: 15, cursor: "pointer", marginBottom: 20, transition: "all 0.3s", boxShadow: saved ? "none" : "0 0 24px var(--lime)40" }}>
+        style={{ width: "100%", background: saved ? "transparent" : "var(--lime)", color: saved ? "var(--lime)" : "var(--bg)", border: saved ? "1px solid var(--lime)" : "none", borderRadius: 14, padding: "14px", fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 15, cursor: "pointer", marginBottom: 20, transition: "all 0.3s", boxShadow: saved ? "none" : "0 0 24px var(--lime)40" }}>
         {saved ? "✓ saved!" : "save changes"}
       </button>
 

@@ -54,7 +54,7 @@ export default function StreakMilestoneBanner({ streak, onDismiss }: { streak: n
           consistency is the whole game. you're building something real.
         </p>
         <button onClick={onDismiss}
-          style={{ background: "var(--amber)", color: "var(--bg)", border: "none", borderRadius: 14, padding: "14px 32px", fontFamily: "var(--font-body)", fontWeight: 800, fontSize: 15, cursor: "pointer", boxShadow: "0 0 20px var(--amber)60" }}>
+          style={{ background: "var(--amber)", color: "var(--bg)", border: "none", borderRadius: 14, padding: "14px 32px", fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 15, cursor: "pointer", boxShadow: "0 0 20px var(--amber)60" }}>
           let's keep going ⚡
         </button>
       </div>

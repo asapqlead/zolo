@@ -1,126 +1,177 @@
 "use client";
 import { useState } from "react";
-import { useZoloStore } from "@/lib/store";
+import { useZoloStore, Task } from "@/lib/store";
 import { format, addDays } from "date-fns";
-import { X, Moon } from "lucide-react";
+import { Moon, RotateCcw, Clock, X } from "lucide-react";
 
-interface Props { onClose: () => void; }
+interface Props {
+  onClose: () => void;
+}
+
 type Decision = "move" | "keep" | "dismiss";
 
 export default function BedtimeHandoff({ onClose }: Props) {
   const { getTodayTasks, rescheduleTask, archiveTask, addXP } = useZoloStore();
-  const incompleteTasks = getTodayTasks().filter(t => !t.completed);
+  const incompleteTasks = getTodayTasks().filter((t) => !t.completed);
   const [decisions, setDecisions] = useState<Record<string, Decision>>({});
   const [done, setDone] = useState(false);
 
   function decide(id: string, dec: Decision) {
-    setDecisions(prev => ({ ...prev, [id]: dec }));
+    setDecisions((prev) => ({ ...prev, [id]: dec }));
   }
 
   function finish() {
     const tomorrow = format(addDays(new Date(), 1), "yyyy-MM-dd");
     let movedCount = 0;
-    incompleteTasks.forEach(t => {
+    incompleteTasks.forEach((t) => {
       const dec = decisions[t.id] || "keep";
       if (dec === "move") { rescheduleTask(t.id, tomorrow); movedCount++; }
       else if (dec === "dismiss") { archiveTask(t.id); }
     });
-    if (movedCount > 0) addXP(20);
+    if (movedCount > 0) addXP(20); // proactive planning bonus
     setDone(true);
-    setTimeout(onClose, 2000);
+    setTimeout(onClose, 2200);
   }
+
+  const allDecided = incompleteTasks.every((t) => decisions[t.id]);
+
+  const decBg: Record<Decision, string> = {
+    move: "var(--cyan)20",
+    keep: "var(--amber)15",
+    dismiss: "var(--pink)15",
+  };
+  const decBorder: Record<Decision, string> = {
+    move: "var(--cyan)",
+    keep: "var(--amber)",
+    dismiss: "var(--pink)",
+  };
 
   return (
     <div style={{
       position: "fixed", inset: 0, zIndex: 200,
-      background: "rgba(0,0,0,0.80)", backdropFilter: "blur(6px)",
+      background: "rgba(0,0,0,0.85)",
+      backdropFilter: "blur(6px)",
       display: "flex", alignItems: "flex-end",
     }}>
-      {/* spec §6: bottom sheet bg #13131A, 2px rgba(fff,0.08) top border, 20px radius */}
-      <div className="animate-sheet" style={{
+      <div className="animate-slide-up" style={{
         width: "100%", maxWidth: 480, margin: "0 auto",
-        background: "#13131A",
-        borderTop: "2px solid rgba(255,255,255,0.08)",
-        borderRadius: "20px 20px 0 0",
-        padding: 16, maxHeight: "85dvh", overflowY: "auto",
+        background: "var(--surface)",
+        borderRadius: "24px 24px 0 0",
+        border: "1px solid var(--border)",
+        borderBottom: "none",
+        padding: "24px 20px 40px",
+        maxHeight: "85dvh",
+        overflowY: "auto",
       }}>
         {done ? (
-          <div style={{ textAlign: "center", padding: "36px 0" }}>
-            <div style={{ fontSize: 44, marginBottom: 12 }}>🌙</div>
-            {/* spec §6: title Syne 800 */}
-            <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 20, marginBottom: 6 }}>goodnight ✨</div>
-            <div style={{ color: "var(--text-muted)", fontSize: 13 }}>streak's safe — see you tomorrow</div>
-            {Object.values(decisions).filter(d => d === "move").length > 0 && (
-              <div style={{ color: "var(--lime)", fontSize: 12, marginTop: 8 }}>+20 xp for planning ahead 🎯</div>
+          <div style={{ textAlign: "center", padding: "40px 0" }}>
+            <div style={{ fontSize: 52, marginBottom: 16 }}>🌙</div>
+            <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 22, marginBottom: 8 }}>
+              goodnight ✨
+            </div>
+            <div style={{ color: "var(--text-muted)", fontSize: 14 }}>
+              streak's safe — see you tomorrow
+            </div>
+            {Object.values(decisions).filter((d) => d === "move").length > 0 && (
+              <div style={{ color: "var(--lime)", fontSize: 13, marginTop: 8, fontWeight: 600 }}>
+                +20 XP for proactive planning 🎯
+              </div>
             )}
           </div>
         ) : (
           <>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
+            {/* Header */}
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20 }}>
               <div>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
-                  <Moon size={16} color="var(--purple)" />
-                  {/* spec §6: "winding down?" Syne 800 */}
+                  <Moon size={18} color="var(--purple)" />
                   <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 20 }}>winding down?</span>
                 </div>
-                <p style={{ color: "var(--text-muted)", fontSize: 12, lineHeight: 1.5 }}>
-                  you've got {incompleteTasks.length} task{incompleteTasks.length !== 1 ? "s" : ""} left
+                <p style={{ color: "var(--text-muted)", fontSize: 13, lineHeight: 1.5 }}>
+                  you've got {incompleteTasks.length} quest{incompleteTasks.length !== 1 ? "s" : ""} left. what do you want to do with them?
                 </p>
               </div>
               <button onClick={onClose} style={{ background: "transparent", border: "none", color: "var(--text-muted)", cursor: "pointer", padding: 4 }}>
-                <X size={18} />
+                <X size={20} />
               </button>
             </div>
 
             {incompleteTasks.length === 0 ? (
-              <div style={{ textAlign: "center", padding: "28px 0" }}>
-                <p style={{ color: "var(--lime)", fontWeight: 500, fontSize: 14 }}>all quests done — you crushed it 🎉</p>
+              <div style={{ textAlign: "center", padding: "32px 0" }}>
+                <div style={{ fontSize: 40, marginBottom: 12 }}>🎉</div>
+                <p style={{ color: "var(--lime)", fontWeight: 700 }}>all clear — you crushed it today!</p>
               </div>
             ) : (
               <>
-                <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-cards)", marginBottom: 14 }}>
-                  {incompleteTasks.map(task => {
+                {/* Task decisions */}
+                <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 20 }}>
+                  {incompleteTasks.map((task) => {
                     const dec = decisions[task.id];
+                    const priorityColor = task.priority === "high" ? "var(--pink)" : task.priority === "medium" ? "var(--amber)" : "var(--text-muted)";
                     return (
-                      /* spec §6: nested card #1A1A24 */
                       <div key={task.id} style={{
-                        background: "#1A1A24",
-                        border: "1px solid rgba(255,255,255,0.06)",
-                        borderRadius: 12, padding: 11,
+                        background: dec ? decBg[dec] : "var(--surface2)",
+                        border: `1.5px solid ${dec ? decBorder[dec] : "var(--border)"}`,
+                        borderRadius: 14, padding: "12px 14px",
+                        transition: "all 0.25s",
                       }}>
-                        <div style={{ fontSize: 13, fontWeight: 500, marginBottom: 10, color: "var(--text)" }}>{task.title}</div>
-                        {/* spec §6: 3 buttons per task */}
+                        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
+                          <div style={{ width: 8, height: 8, borderRadius: "50%", background: priorityColor, flexShrink: 0 }} />
+                          <span style={{ fontSize: 14, fontWeight: 500, flex: 1 }}>{task.title}</span>
+                          <span style={{ fontSize: 10, color: priorityColor, textTransform: "uppercase", fontWeight: 700 }}>{task.priority}</span>
+                        </div>
                         <div style={{ display: "flex", gap: 6 }}>
-                          {/* spec §6: "to tomorrow" secondary */}
-                          <button onClick={() => decide(task.id, "move")}
-                            style={{ flex: 1, background: "transparent", border: `1px solid ${dec === "move" ? "rgba(255,255,255,0.30)" : "rgba(255,255,255,0.12)"}`, borderRadius: 8, padding: "8px 4px", color: dec === "move" ? "var(--text)" : "var(--text-muted)", cursor: "pointer", fontSize: 11, lineHeight: 1, letterSpacing: "0.2px", transition: "all 0.18s" }}>
-                            to tomorrow
-                          </button>
-                          {/* spec §6: "keep tonight" Lime outline */}
-                          <button onClick={() => decide(task.id, "keep")}
-                            style={{ flex: 1, background: "transparent", border: `1px solid ${dec === "keep" ? "var(--lime)" : "rgba(200,255,0,0.25)"}`, borderRadius: 8, padding: "8px 4px", color: dec === "keep" ? "var(--lime)" : "rgba(200,255,0,0.6)", cursor: "pointer", fontSize: 11, lineHeight: 1, letterSpacing: "0.2px", transition: "all 0.18s" }}>
-                            keep tonight
-                          </button>
-                          {/* spec §6: "x" ghost dismiss */}
-                          <button onClick={() => decide(task.id, "dismiss")}
-                            style={{ width: 36, background: "transparent", border: `1px solid ${dec === "dismiss" ? "rgba(255,255,255,0.20)" : "rgba(255,255,255,0.06)"}`, borderRadius: 8, padding: "8px 4px", color: "var(--text-muted)", cursor: "pointer", fontSize: 11, lineHeight: 1, flexShrink: 0, transition: "all 0.18s" }}>
-                            ✕
-                          </button>
+                          {([
+                            ["move", "move to tomorrow", RotateCcw, "var(--cyan)"],
+                            ["keep", "keep tonight", Clock, "var(--amber)"],
+                            ["dismiss", "let it go", X, "var(--pink)"],
+                          ] as [Decision, string, any, string][]).map(([d, label, Icon, color]) => (
+                            <button key={d} onClick={() => decide(task.id, d)}
+                              style={{
+                                flex: 1,
+                                background: dec === d ? `${color}30` : "transparent",
+                                border: `1px solid ${dec === d ? color : "var(--border)"}`,
+                                borderRadius: 8, padding: "7px 4px",
+                                color: dec === d ? color : "var(--text-muted)",
+                                fontSize: 10, fontWeight: 600, cursor: "pointer",
+                                display: "flex", alignItems: "center", justifyContent: "center", gap: 3,
+                                transition: "all 0.2s",
+                              }}>
+                              <Icon size={10} /> {label}
+                            </button>
+                          ))}
                         </div>
                       </div>
                     );
                   })}
                 </div>
 
-                {/* spec §6: "done for tonight" Purple primary CTA */}
+                {/* Bulk actions */}
+                <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
+                  <button onClick={() => incompleteTasks.forEach((t) => decide(t.id, "move"))}
+                    style={{ flex: 1, background: "var(--cyan)15", border: "1px solid var(--cyan)40", borderRadius: 10, padding: "10px", color: "var(--cyan)", fontSize: 12, fontWeight: 700, cursor: "pointer" }}>
+                    move all →
+                  </button>
+                  <button onClick={() => incompleteTasks.forEach((t) => decide(t.id, "dismiss"))}
+                    style={{ flex: 1, background: "var(--surface2)", border: "1px solid var(--border)", borderRadius: 10, padding: "10px", color: "var(--text-muted)", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>
+                    dismiss all
+                  </button>
+                </div>
+
                 <button onClick={finish}
-                  style={{ width: "100%", background: "var(--purple)", color: "white", border: "none", borderRadius: 14, padding: "13px 16px", fontSize: 13, fontWeight: 500, cursor: "pointer", lineHeight: 1, letterSpacing: "0.2px", boxShadow: "0 0 16px rgba(123,63,228,0.40)" }}>
+                  style={{
+                    width: "100%",
+                    background: "var(--purple)",
+                    color: "white",
+                    border: "none",
+                    borderRadius: 14, padding: "14px",
+                    fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 15,
+                    cursor: "pointer",
+                    boxShadow: "0 0 20px var(--purple)60",
+                    transition: "all 0.2s",
+                  }}>
                   done for tonight 🌙
                 </button>
-                {/* spec §6: footer note Muted 10px */}
-                <p style={{ textAlign: "center", color: "var(--text-muted)", fontSize: 10, marginTop: 10, lineHeight: 1.4 }}>
-                  moving tasks: +20 xp for planning ahead
-                </p>
               </>
             )}
           </>

@@ -81,7 +81,7 @@ export default function HabitsPage() {
       )}
 
       {/* Header */}
-      <div style={{ padding: "20px 16px 14px", background: "linear-gradient(180deg, var(--surface) 0%, transparent 100%)", borderBottom: "1px solid var(--border)" }}>
+      <div style={{ padding: "52px 20px 16px", background: "linear-gradient(180deg, var(--surface) 0%, transparent 100%)", borderBottom: "1px solid var(--border)" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 14 }}>
           <div>
             <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 28, lineHeight: 1 }}>habits</h1>
@@ -91,7 +91,7 @@ export default function HabitsPage() {
             }
           </div>
           <button onClick={() => setShowAdd(v => !v)}
-            style={{ background: "var(--lime)", color: "var(--bg)", border: "none", borderRadius: 12, padding: "10px 16px", display: "flex", alignItems: "center", gap: 6, fontFamily: "var(--font-body)", fontWeight: 800, fontSize: 13, cursor: "pointer", boxShadow: "0 0 20px var(--lime)50" }}>
+            style={{ background: "var(--lime)", color: "var(--bg)", border: "none", borderRadius: 12, padding: "10px 16px", display: "flex", alignItems: "center", gap: 6, fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 13, cursor: "pointer", boxShadow: "0 0 20px var(--lime)50" }}>
             <Plus size={15} /> add habit
           </button>
         </div>
@@ -152,7 +152,7 @@ export default function HabitsPage() {
               <button onClick={() => setShowAdd(false)}
                 style={{ flex: 1, background: "transparent", border: "1px solid var(--border)", borderRadius: 10, padding: "11px", color: "var(--text-muted)", cursor: "pointer", fontSize: 13 }}>cancel</button>
               <button onClick={handleAdd} disabled={!name.trim()}
-                style={{ flex: 2, background: name.trim() ? "var(--lime)" : "var(--surface2)", color: name.trim() ? "var(--bg)" : "var(--text-muted)", border: "none", borderRadius: 10, padding: "11px", fontFamily: "var(--font-body)", fontWeight: 800, fontSize: 13, cursor: name.trim() ? "pointer" : "not-allowed", transition: "all 0.2s" }}>
+                style={{ flex: 2, background: name.trim() ? "var(--lime)" : "var(--surface2)", color: name.trim() ? "var(--bg)" : "var(--text-muted)", border: "none", borderRadius: 10, padding: "11px", fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 13, cursor: name.trim() ? "pointer" : "not-allowed", transition: "all 0.2s" }}>
                 add habit ⚡
               </button>
             </div>
@@ -242,7 +242,7 @@ export default function HabitsPage() {
             <div style={{ fontSize: 52, marginBottom: 16 }}>✨</div>
             <p style={{ color: "var(--text-muted)", marginBottom: 20, fontSize: 14 }}>no habits yet — start small</p>
             <button onClick={() => setShowAdd(true)}
-              style={{ background: "var(--lime)", color: "var(--bg)", border: "none", borderRadius: 12, padding: "12px 24px", fontFamily: "var(--font-body)", fontWeight: 800, cursor: "pointer", fontSize: 14 }}>
+              style={{ background: "var(--lime)", color: "var(--bg)", border: "none", borderRadius: 12, padding: "12px 24px", fontFamily: "var(--font-display)", fontWeight: 800, cursor: "pointer", fontSize: 14 }}>
               add your first habit
             </button>
           </div>
