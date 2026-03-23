@@ -86,7 +86,7 @@ export default function OnboardingPage() {
   );
 
   const nextBtn = (onClick: () => void, disabled = false) => (
-    <button onClick={onClick} disabled={disabled} style={{ background: disabled ? "var(--surface2)" : "var(--lime)", color: disabled ? "var(--text-muted)" : "var(--bg)", border: "none", borderRadius: 12, padding: "14px 28px", fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 15, cursor: disabled ? "not-allowed" : "pointer", display: "flex", alignItems: "center", gap: 6, transition: "all 0.2s", boxShadow: disabled ? "none" : "0 0 20px var(--lime)40" }}>
+    <button onClick={onClick} disabled={disabled} style={{ background: disabled ? "var(--surface2)" : "var(--lime)", color: disabled ? "var(--text-muted)" : "var(--bg)", border: "none", borderRadius: 12, padding: "14px 28px", fontFamily: "var(--font-body)", fontWeight: 800, fontSize: 15, cursor: disabled ? "not-allowed" : "pointer", display: "flex", alignItems: "center", gap: 6, transition: "all 0.2s", boxShadow: disabled ? "none" : "0 0 20px var(--lime)40" }}>
       next <ChevronRight size={18} />
     </button>
   );
@@ -191,7 +191,7 @@ export default function OnboardingPage() {
               <div style={{ display: "flex", gap: 10 }}>
                 {[25, 45, 60, 90].map((mins) => (
                   <button key={mins} onClick={() => setFocusLen(mins)}
-                    style={{ flex: 1, background: focusLen === mins ? "var(--lime)20" : "var(--surface)", border: `2px solid ${focusLen === mins ? "var(--lime)" : "var(--border)"}`, borderRadius: 12, padding: "12px 4px", color: focusLen === mins ? "var(--lime)" : "var(--text-muted)", cursor: "pointer", fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 14, transition: "all 0.2s" }}>
+                    style={{ flex: 1, background: focusLen === mins ? "var(--lime)20" : "var(--surface)", border: `2px solid ${focusLen === mins ? "var(--lime)" : "var(--border)"}`, borderRadius: 12, padding: "12px 4px", color: focusLen === mins ? "var(--lime)" : "var(--text-muted)", cursor: "pointer", fontFamily: "var(--font-body)", fontWeight: 700, fontSize: 14, transition: "all 0.2s" }}>
                     {mins}m
                   </button>
                 ))}
@@ -282,7 +282,7 @@ export default function OnboardingPage() {
               <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                 {skipBtn("skip", finish)}
                 <button onClick={finish}
-                  style={{ background: "var(--lime)", color: "var(--bg)", border: "none", borderRadius: 12, padding: "14px 28px", fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 15, cursor: "pointer", boxShadow: "0 0 24px var(--lime)60" }}>
+                  style={{ background: "var(--lime)", color: "var(--bg)", border: "none", borderRadius: 12, padding: "14px 28px", fontFamily: "var(--font-body)", fontWeight: 800, fontSize: 15, cursor: "pointer", boxShadow: "0 0 24px var(--lime)60" }}>
                   let's go ⚡
                 </button>
               </div>

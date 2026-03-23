@@ -1,10 +1,7 @@
 "use client";
 import { getVibeLabel, getVibeColor } from "@/lib/store";
 
-interface VibeScoreProps {
-  score: number;
-  size?: number;
-}
+interface VibeScoreProps { score: number; size?: number; }
 
 export default function VibeScore({ score, size = 140 }: VibeScoreProps) {
   const color = getVibeColor(score);
@@ -16,33 +13,20 @@ export default function VibeScore({ score, size = 140 }: VibeScoreProps) {
   return (
     <div style={{ position: "relative", width: size, height: size, display: "flex", alignItems: "center", justifyContent: "center" }}>
       <svg width={size} height={size} style={{ position: "absolute", top: 0, left: 0, transform: "rotate(-90deg)" }}>
-        <circle
-          cx={size / 2} cy={size / 2} r={r}
-          fill="none" stroke="var(--surface2)" strokeWidth={8}
-        />
-        <circle
-          cx={size / 2} cy={size / 2} r={r}
-          fill="none" stroke={color} strokeWidth={8}
-          strokeDasharray={`${dash} ${circ}`}
-          strokeLinecap="round"
-          style={{
-            filter: `drop-shadow(0 0 8px ${color})`,
-            transition: "stroke-dasharray 1s cubic-bezier(0.34,1.56,0.64,1)",
-          }}
-        />
+        {/* track */}
+        <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth={6} />
+        {/* progress */}
+        <circle cx={size/2} cy={size/2} r={r} fill="none" stroke={color} strokeWidth={6}
+          strokeDasharray={`${dash} ${circ}`} strokeLinecap="round"
+          style={{ filter: `drop-shadow(0 0 6px ${color})`, transition: "stroke-dasharray 500ms ease" }} />
       </svg>
       <div style={{ textAlign: "center", zIndex: 1 }}>
-        <div style={{
-          fontFamily: "var(--font-display)",
-          fontWeight: 800,
-          fontSize: size * 0.26,
-          color,
-          lineHeight: 1,
-          textShadow: `0 0 20px ${color}60`,
-        }}>
+        {/* spec §5.1 vibe score: Syne 800 40px */}
+        <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: size * 0.28, color, lineHeight: 1, textShadow: `0 0 16px ${color}50` }}>
           {score}
         </div>
-        <div style={{ fontSize: 10, color: "var(--text-muted)", marginTop: 2, fontWeight: 500 }}>
+        {/* spec §3 microcopy: DM Sans 400 9-10px lowercase */}
+        <div style={{ fontSize: 9, color: `${color}b0`, marginTop: 3, fontFamily: "var(--font-body)", fontWeight: 400 }}>
           {label}
         </div>
       </div>

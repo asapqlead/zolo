@@ -135,7 +135,7 @@ ${totalFocusMins < 60 ? "- Focus sessions were light. Even one 25-min lock-in pe
   }
 
   return (
-    <div style={{ minHeight: "100dvh", background: "var(--bg)", padding: "52px 20px 24px" }}>
+    <div style={{ minHeight: "100dvh", background: "var(--bg)", padding: "20px 16px 20px" }}>
 
       {/* Header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
@@ -144,7 +144,7 @@ ${totalFocusMins < 60 ? "- Focus sessions were light. Even one 25-min lock-in pe
           <p style={{ color: "var(--text-muted)", fontSize: 12, marginTop: 4 }}>week of {format(weekStart, "MMM d")}</p>
         </div>
         <button onClick={generateReflection} disabled={loading}
-          style={{ background: loading ? "var(--surface2)" : "var(--purple)", color: "white", border: "none", borderRadius: 12, padding: "10px 16px", display: "flex", alignItems: "center", gap: 6, fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 13, cursor: loading ? "not-allowed" : "pointer", boxShadow: loading ? "none" : "0 0 20px var(--purple)50", transition: "all 0.3s" }}>
+          style={{ background: loading ? "var(--surface2)" : "var(--purple)", color: "white", border: "none", borderRadius: 12, padding: "10px 16px", display: "flex", alignItems: "center", gap: 6, fontFamily: "var(--font-body)", fontWeight: 800, fontSize: 13, cursor: loading ? "not-allowed" : "pointer", boxShadow: loading ? "none" : "0 0 20px var(--purple)50", transition: "all 0.3s" }}>
           {loading
             ? <><RefreshCw size={15} className="animate-spin" /> generating...</>
             : <><Sparkles size={15} /> generate</>}
@@ -230,7 +230,7 @@ ${totalFocusMins < 60 ? "- Focus sessions were light. Even one 25-min lock-in pe
             Hit Generate to get your AI-powered weekly recap.<br />It gets smarter the more you log.
           </p>
           <button onClick={generateReflection} disabled={loading}
-            style={{ background: "var(--purple)", color: "white", border: "none", borderRadius: 12, padding: "12px 24px", fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 14, cursor: "pointer", boxShadow: "0 0 20px var(--purple)50" }}>
+            style={{ background: "var(--purple)", color: "white", border: "none", borderRadius: 12, padding: "12px 24px", fontFamily: "var(--font-body)", fontWeight: 800, fontSize: 14, cursor: "pointer", boxShadow: "0 0 20px var(--purple)50" }}>
             <Sparkles size={14} style={{ display: "inline", marginRight: 6, verticalAlign: "middle" }} />
             generate reflection
           </button>

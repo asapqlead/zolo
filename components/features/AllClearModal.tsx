@@ -73,7 +73,7 @@ export default function AllClearModal({ vibeScore, onClose }: Props) {
             style={{
               background: "var(--lime)", color: "var(--bg)",
               border: "none", borderRadius: 14, padding: "14px",
-              fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 15,
+              fontFamily: "var(--font-body)", fontWeight: 800, fontSize: 15,
               cursor: "pointer", boxShadow: "0 0 20px var(--lime)60",
             }}>
             plan tomorrow's quests 🎯

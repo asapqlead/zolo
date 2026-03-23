@@ -103,7 +103,7 @@ export default function TasksPage() {
 
       {/* Header */}
       <div style={{
-        padding: "52px 20px 16px",
+        padding: "20px 16px 14px",
         background: "linear-gradient(180deg, var(--surface) 0%, transparent 100%)",
         borderBottom: "1px solid var(--border)",
       }}>
@@ -117,7 +117,7 @@ export default function TasksPage() {
             )}
           </div>
           <button onClick={() => { setShowAdd(v => !v); setNewDate(tab === "tomorrow" ? tomorrow : today); }}
-            style={{ background: "var(--lime)", color: "var(--bg)", border: "none", borderRadius: 12, padding: "10px 16px", display: "flex", alignItems: "center", gap: 6, fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 13, cursor: "pointer", boxShadow: "0 0 20px var(--lime)50", transition: "all 0.2s" }}>
+            style={{ background: "var(--lime)", color: "var(--bg)", border: "none", borderRadius: 12, padding: "10px 16px", display: "flex", alignItems: "center", gap: 6, fontFamily: "var(--font-body)", fontWeight: 800, fontSize: 13, cursor: "pointer", boxShadow: "0 0 20px var(--lime)50", transition: "all 0.2s" }}>
             <Plus size={15} /> add quest
           </button>
         </div>
@@ -197,7 +197,7 @@ export default function TasksPage() {
                 cancel
               </button>
               <button onClick={handleAdd} disabled={!newTitle.trim()}
-                style={{ flex: 2, background: newTitle.trim() ? "var(--lime)" : "var(--surface2)", color: newTitle.trim() ? "var(--bg)" : "var(--text-muted)", border: "none", borderRadius: 10, padding: "11px", fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 13, cursor: newTitle.trim() ? "pointer" : "not-allowed", transition: "all 0.2s" }}>
+                style={{ flex: 2, background: newTitle.trim() ? "var(--lime)" : "var(--surface2)", color: newTitle.trim() ? "var(--bg)" : "var(--text-muted)", border: "none", borderRadius: 10, padding: "11px", fontFamily: "var(--font-body)", fontWeight: 800, fontSize: 13, cursor: newTitle.trim() ? "pointer" : "not-allowed", transition: "all 0.2s" }}>
                 add quest ⚡
               </button>
             </div>
@@ -237,7 +237,7 @@ export default function TasksPage() {
               </p>
               {(tab === "today" || tab === "tomorrow") && (
                 <button onClick={() => { setShowAdd(true); setNewDate(tab === "tomorrow" ? tomorrow : today); }}
-                  style={{ background: "var(--lime)", color: "var(--bg)", border: "none", borderRadius: 10, padding: "10px 20px", fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 13, cursor: "pointer" }}>
+                  style={{ background: "var(--lime)", color: "var(--bg)", border: "none", borderRadius: 10, padding: "10px 20px", fontFamily: "var(--font-body)", fontWeight: 800, fontSize: 13, cursor: "pointer" }}>
                   add a quest ⚡
                 </button>
               )}

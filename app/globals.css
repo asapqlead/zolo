@@ -1,21 +1,33 @@
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@400;500;600&display=swap');
 
 :root {
-  --bg: #0A0A0F;
-  --surface: #13131A;
-  --surface2: #1C1C28;
-  --border: #2A2A3A;
-  --lime: #C8FF00;
-  --purple: #7B3FE4;
-  --cyan: #00F5D4;
-  --pink: #F72585;
-  --amber: #FFB703;
-  --red: #FF4444;
-  --text: #EFEFFF;
-  --text-muted: #6B6B80;
-  --text-dim: #3A3A50;
+  /* ── Colors — spec §2 ──────────────────────────────────────── */
+  --bg:          #0A0A0F;
+  --surface:     #13131A;
+  --surface2:    #1A1A24;
+  --border:      rgba(255,255,255,0.07);
+  --border-nav:  rgba(255,255,255,0.06);
+  --lime:        #C8FF00;
+  --purple:      #7B3FE4;
+  --cyan:        #00F5D4;
+  --pink:        #F72585;
+  --amber:       #FFB703;
+  --red:         #FF4444;
+  --text:        #E8E8F0;
+  --text-muted:  #6B6B80;
+  --text-dim:    rgba(255,255,255,0.10);
+
+  /* ── Typography — spec §3 ──────────────────────────────────── */
   --font-display: 'Syne', sans-serif;
-  --font-body: 'DM Sans', sans-serif;
+  --font-body:    'DM Sans', sans-serif;
+
+  /* ── Spacing — spec §4 ─────────────────────────────────────── */
+  --screen-h-pad: 16px;
+  --card-pad:     13px;
+  --card-radius:  14px;
+  --card-radius-sm: 10px;
+  --gap-cards:    10px;
+  --gap-sections: 14px;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -24,43 +36,95 @@ html {
   background: var(--bg);
   color: var(--text);
   font-family: var(--font-body);
+  font-size: 14px;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body { min-height: 100dvh; overflow-x: hidden; }
 
-::-webkit-scrollbar { width: 4px; }
+/* ── Scrollbar ─────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 3px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
+/* ── Selection ─────────────────────────────────────────────────── */
 ::selection { background: var(--lime); color: var(--bg); }
 
+/* ── Focus ─────────────────────────────────────────────────────── */
 :focus-visible { outline: 2px solid var(--lime); outline-offset: 2px; border-radius: 4px; }
 
-@keyframes pulse-slow { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-@keyframes slide-up { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
-@keyframes bounce-in { 0% { transform: scale(0.8); opacity: 0; } 60% { transform: scale(1.05); } 100% { transform: scale(1); opacity: 1; } }
-@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-@keyframes xp-fly { 0% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-60px) scale(1.3); } }
-@keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
-
-.animate-slide-up { animation: slide-up 0.4s ease forwards; }
-.animate-fade-in { animation: fade-in 0.3s ease forwards; }
-.animate-bounce-in { animation: bounce-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
-.animate-pulse-slow { animation: pulse-slow 1.2s ease-in-out infinite; }
-.animate-spin { animation: spin 1s linear infinite; }
-
-.glass { background: rgba(19, 19, 26, 0.8); backdrop-filter: blur(12px); border: 1px solid var(--border); }
-.font-display { font-family: var(--font-display); }
-.no-scrollbar::-webkit-scrollbar { display: none; }
-.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+/* ── Button base — spec §3 & §6 ────────────────────────────────── */
+/* All buttons use DM Sans 500, never Syne */
+button {
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 13px;
+  letter-spacing: 0.2px;
+  line-height: 1;
 }
 
+/* ── Animations — spec §7 ──────────────────────────────────────── */
 @keyframes xp-fly {
-  0% { opacity: 1; transform: translateY(0) scale(1); }
-  100% { opacity: 0; transform: translateY(-80px) scale(1.4); }
+  0%   { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(-80px) scale(1.3); }
+}
+@keyframes pulse-slow {
+  /* decay badge: scale 1→0.97, opacity 1→0.4, 1.2s loop */
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.4; transform: scale(0.97); }
+}
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes slide-up-sheet {
+  /* bottom sheet: 280ms ease-out — spec §7 */
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes bounce-in {
+  /* streak milestone spring — spec §7 */
+  0%   { transform: scale(0.85) translateY(40px); opacity: 0; }
+  60%  { transform: scale(1.04) translateY(0); opacity: 1; }
+  100% { transform: scale(1) translateY(0); }
+}
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@keyframes bar-spring {
+  /* energy bars staggered spring — spec §7 */
+  from { transform: scaleY(0); opacity: 0; }
+  to   { transform: scaleY(1); opacity: 1; }
+}
+@keyframes home-reveal {
+  /* onboarding home reveal: fade + spring scale 0.95→1 — spec §7 */
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.animate-slide-up    { animation: slide-up 0.4s ease-out forwards; }
+.animate-fade-in     { animation: fade-in 0.3s ease forwards; }
+.animate-bounce-in   { animation: bounce-in 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+.animate-pulse-slow  { animation: pulse-slow 1.2s ease-in-out infinite; }
+.animate-spin        { animation: spin 1s linear infinite; }
+.animate-home-reveal { animation: home-reveal 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+.animate-sheet       { animation: slide-up-sheet 0.28s ease-out forwards; }
+
+/* ── Utility ────────────────────────────────────────────────────── */
+.font-display { font-family: var(--font-display); }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+/* ── Reduced motion — spec §7 ──────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }
