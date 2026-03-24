@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import SyncProvider from "@/components/layout/SyncProvider";
-import { Analytics } from "@vercel/analytics/next";
 
 export const metadata: Metadata = {
   title: "ZOLO — do the thing. get the points.",
